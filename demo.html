@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>jQuery JSON Suggest Box v2 Demo</title>
+
+<link rel="stylesheet" href="jQueryThemes/start/jquery-ui-1.8.9.custom.css" type="text/css" />
+<!--
+<link rel="stylesheet" href="jQueryThemes/dot-luv/jquery-ui-1.8.9.custom.css" type="text/css" />
+<link rel="stylesheet" href="jQueryThemes/le-frog/jquery-ui-1.8.9.custom.css" type="text/css" />
+-->
+
+<style type="text/css">
+input { padding:4px; }
+table { text-align:left; margin:0px 10px; width:900px; }
+table td, table th { border:1px solid #ddd; padding:5px; }
+
+/****
+*	Custom styling for the select menu items with images and extra 
+*	text in them.
+*/
+.jsonSuggest li a img {
+	float:left;
+	margin-right:5px;
+}
+.jsonSuggest li a small {
+	display:block;
+	text-align:right;
+}
+.jsonSuggest { font-size:0.8em; }
+</style>
+</head>
+
+<body>
+
+<h1>Demo</h1>
+<p>Here are a few examples of using the suggest box. Have a look at the <a href="testData/testData.js">testData.js</a>
+file to see what kind of data I am passing in to the plugin. There are more options than those being used in these few examples so see the options break down
+at the bottom of this page. The drop downs can be styled however you wish, however jQuery themes are fully supported.</p>
+
+<h2>Example 1</h2>
+<input type="text" size="50" id="suggestBox" />
+<pre><code class="codelist">
+$('input#suggestBox').jsonSuggest({data: testData.countryCodes, minCharacters: 2});
+</code></pre>
+
+<h2>Example 2</h2>
+<input type="text" size="50" id="suggestBox2" />
+<pre><code class="codelist">
+$('input#suggestBox2').jsonSuggest({data: testData.webSites, onSelect: callback});
+</code></pre>
+
+<h2>Example 3</h2>
+<input type="text" size="50" id="suggestBox3" />
+<pre><code class="codelist">
+// will always return all results, expected use is to call a URL that does something with the search text
+// before returning a sub set of results.
+$('input#suggestBox3').jsonSuggest({url: 'http://tomcoote.co.uk/static/JSONSuggestBox2/testData/countryCodes.txt', maxResults: 20});
+</code></pre>
+
+<h2>Options</h2>
+<table>
+<thead>
+<tr>
+	<th>Name</th>
+	<th>Default</th>
+	<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>url</td>
+	<td>''</td>
+	<td>A URL that will return a JSON response. Called via $.getJSON, it is passed a data dictionary containing the user typed search phrase. It must return a JSON string that represents the array of results to display.</td>
+</tr>
+<tr>
+	<td>data</td>
+	<td>[]</td>
+	<td>An array or JSON string representation of an array of data to search through. <a href="testData/testData.js">See Examples.</a></td>
+</tr>
+<tr>
+	<td>minCharacters</td>
+	<td>1</td>
+	<td>Number of characters that the input should accept before running a search.</td>
+</tr>
+<tr>
+	<td>maxResults</td>
+	<td>undefined</td>
+	<td>If set then no more results than this number will be found.</td>
+</tr>
+<tr>
+	<td>wildCard</td>
+	<td>''</td>
+	<td>A character to be used as a match all wildcard when searching. Leaving empty will mean results are matched inside strings but if a wildCard is present then results are matched from the beginning of strings.</td>
+</tr>
+<tr>
+	<td>caseSensitive</td>
+	<td>false</td>
+	<td>True if the filter search's are to be case sensitive.</td>
+</tr>
+<tr>
+	<td>notCharacter</td>
+	<td>!</td>
+	<td>The character to use at the start of any search text to specify that the results should NOT contain the following text.</td>
+</tr>
+<tr>
+	<td>maxHeight</td>
+	<td>350</td>
+	<td>This is the maximum height that the results box can reach before scroll bars are shown instead of getting taller.</td>
+</tr>
+<tr>
+	<td>width</td>
+	<td>undefined</td>
+	<td>If set this will become the width of the results box else the box will be the same width as the input.</td>
+</tr>
+<tr>
+	<td>highlightMatches</td>
+	<td>true</td>
+	<td>This will add strong tags around the text that matches the search text in each result.</td>
+</tr>
+<tr>
+	<td>onSelect</td>
+	<td>undefined</td>
+	<td>Function that gets called once a result has been selected, gets passed in the object version of the result as specified in the JSON data.</td>
+</tr>
+</tbody>
+</table>
+
+<br/>
+
+<script language="JavaScript" src="jquery-1.4.4.min.js"></script>
+<script language="JavaScript" src="jquery.jsonSuggest-2.js"></script>
+<script language="JavaScript" src="testData/testData.js"></script>
+<script>
+
+function callback(item) {
+	alert('You selected \'' + item.text + '\'');
+}
+
+jQuery(function() {
+	$('input#suggestBox').jsonSuggest({data: testData.countryCodes, minCharacters: 2});
+	
+	$('input#suggestBox2').jsonSuggest({data: testData.webSites, onSelect: callback});
+	
+	// will always return all results, expected use is to call a URL that does something with the search text
+	// before returning a sub set of results.
+	$('input#suggestBox3').jsonSuggest({url: 'http://tomcoote.co.uk/static/JSONSuggestBox2/testData/countryCodes.txt', maxResults: 20});
+});
+
+</script>
+</body>
+
+</html>
