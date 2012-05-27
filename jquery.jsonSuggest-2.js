@@ -54,7 +54,7 @@
  *			highlightMatches : 	[default true] This will add strong tags around the text that matches the search text in each result.
  *			onSelect :			[default undefined] Function that gets called once a result has been selected, gets passed in 
  *								 the object version of the result as specified in the JSON data.
- *			
+ *			searchingText : [default 'Searching...'] Text displayed when getting results.		
  */
 
 (function($) {
@@ -71,7 +71,8 @@
 				maxHeight: 350,
 				highlightMatches: true,
 				onSelect: undefined,
-				width: undefined
+				width: undefined,
+				searchingText: 'Searching...'
 			},
 			getJSONTimeout;
 		settings = $.extend(defaults, settings);  
@@ -229,7 +230,7 @@
 				}
 				else if (settings.url && typeof settings.url === 'string') {
 					var text = this.value;
-					$(results).html('<li class="ui-menu-item ajaxSearching"><a class="ui-corner-all">Searching...</a></li>').
+					$(results).html('<li class="ui-menu-item ajaxSearching"><a class="ui-corner-all">' + settings.searchingText + '</a></li>').
 						show().css('height', 'auto');
 					
 					getJSONTimeout = window.clearTimeout(getJSONTimeout);
