@@ -71,7 +71,8 @@
 				maxHeight: 350,
 				highlightMatches: true,
 				onSelect: undefined,
-				width: undefined
+				width: undefined,
+        property: 'text'
 			},
 			getJSONTimeout;
 		settings = $.extend(defaults, settings);  
@@ -105,7 +106,7 @@
 			* hide the results again and if set, call the onSelect function.
 			*/
 			function selectResultItem(item) {
-				obj.val(item.text);
+				obj.val(item[settings.property]);
 				$(results).html('').hide();
 				
 				if (typeof settings.onSelect === 'function') {
@@ -142,7 +143,7 @@
 				
 				for (i = 0; i < resultObjects.length; i += 1) {
 					var item = $('<li />'),
-						text = resultObjects[i].text;
+						text = resultObjects[i][settings.property];
 						
 					if (settings.highlightMatches === true) {
 						text = text.replace(filterPatt, '<strong>$1</strong>');
@@ -216,7 +217,7 @@
 					// Look for the required match against each single search data item. When the not
 					// character is used we are looking for a false match. 
 					for (i = 0; i < searchData.length; i += 1) {
-						if (filterPatt.test(searchData[i].text) === bMatch) {
+						if (filterPatt.test(searchData[i][settings.property]) === bMatch) {
 							resultObjects.push(searchData[i]);
 						}
 					}
