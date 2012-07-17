@@ -17,6 +17,8 @@
  *			url :				[default ''] A URL that will return a JSON response. Called via $.getJSON, it is passed a 
  * 								 data dictionary containing the user typed search phrase. It must return a JSON string that
  *								 represents the array of results to display.
+ * 			urlData :			[default {}] Additionnal data you send when requesting the url.
+ *			urlMethod			[default 'get'] Method of the request.
  *			data :				[default []]An array or JSON string representation of an array of data to search through.
  *								 Example of the array format is as follows:
 									[
@@ -62,6 +64,8 @@
 	$.fn.jsonSuggest = function(settings) {
 		var defaults = {  
 				url: '',
+				urlData: {},
+				urlMethod: 'get',
 				data: [],
 				minCharacters: 1,
 				maxResults: undefined,
@@ -235,14 +239,20 @@
 					
 					getJSONTimeout = window.clearTimeout(getJSONTimeout);
 					getJSONTimeout = window.setTimeout(function() {
-						$.getJSON(settings.url, {search: text}, function(data) {
-							if (data) {
-								buildResults(data, text);
-							}
-							else {
-								$(results).html('').hide();
-							}
-						});
+						$.ajax({
+					                url: settings.url,
+					                dataType: 'json',
+					                data: $.extend(settings.urlData, {search: text}),
+					                type: settings.urlMethod,
+					                success: function(data) {
+					                  if (data) {
+					                    buildResults(data, text);
+					                  }
+					                  else {
+					                    $(results).html('').hide();
+					                  }
+					                }
+				                });
 					}, 500);
 				}
 			}
