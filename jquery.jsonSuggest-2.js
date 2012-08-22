@@ -197,7 +197,7 @@
 			function runSuggest(e) {	
 				var search = function(searchData) {
 					if (this.value.length < settings.minCharacters) {
-						$(results).html('').hide();
+						clearAndHideResults();
 						return false;
 					}
 					
@@ -230,6 +230,11 @@
 				}
 				else if (settings.url && typeof settings.url === 'string') {
 					var text = this.value;
+					if (text.length < settings.minCharacters) {
+						clearAndHideResults();
+						return false;
+					}
+                    
 					$(results).html('<li class="ui-menu-item ajaxSearching"><a class="ui-corner-all">Searching...</a></li>').
 						show().css('height', 'auto');
 					
@@ -240,13 +245,20 @@
 								buildResults(data, text);
 							}
 							else {
-								$(results).html('').hide();
+								clearAndHideResults();
 							}
 						});
 					}, 500);
 				}
 			}
 			
+			/**
+			* Clears any previous results and hides the result list
+			*/
+			function clearAndHideResults() {
+				$(results).html('').hide();
+			}            
+            
 			/**
 			* To call specific actions based on the keys pressed in the input
 			* box. Special keys are up, down and return. All other keys
@@ -305,8 +317,8 @@
 			obj.after(results).
 				keyup(keyListener).
 				keydown(function(e) {
-					// for tab key only
-					if (e.keyCode === 9 && currentSelection) {
+					// for tab/enter key
+					if ((e.keyCode === 9 || e.keyCode === 13) && currentSelection) {
 						$(currentSelection).trigger('click');
 						return true;
 					}
