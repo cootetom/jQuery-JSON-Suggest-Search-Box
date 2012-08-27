@@ -72,9 +72,11 @@
 				highlightMatches: true,
 				onSelect: undefined,
 				width: undefined,
-        property: 'text'
+        property: 'text',
+				searchProgressText: 'Searching...'
 			},
-			getJSONTimeout;
+			getJSONTimeout,
+			lastQueryText;
 		settings = $.extend(defaults, settings);  
 	
 		return this.each(function() {
@@ -107,7 +109,7 @@
 			*/
 			function selectResultItem(item) {
 				obj.val(item[settings.property]);
-				$(results).html('').hide();
+				clearAndHideResults();
 				
 				if (typeof settings.onSelect === 'function') {
 					settings.onSelect(item);
@@ -134,12 +136,14 @@
 			* on in the settings.
 			*/
 			function buildResults(resultObjects, filterTxt) {
+				lastQueryText = filterTxt;
+
 				filterTxt = '(' + filterTxt + ')';
 			
 				var bOddRow = true, i, iFound = 0,
 					filterPatt = settings.caseSensitive ? new RegExp(filterTxt, 'g') : new RegExp(filterTxt, 'ig');
 					
-				$(results).html('').hide();
+				clearAndHideResults();
 				
 				for (i = 0; i < resultObjects.length; i += 1) {
 					var item = $('<li />'),
@@ -194,7 +198,11 @@
 			* run a match against each item in the possible results and display any 
 			* results on the page allowing selection by the user.
 			*/
-			function runSuggest(e) {	
+			function runSuggest(e) {
+				if (!hasQueryTextChanged(this)) {
+					return;
+				}
+
 				var search = function(searchData) {
 					if (this.value.length < settings.minCharacters) {
 						clearAndHideResults();
@@ -235,7 +243,7 @@
 						return false;
 					}
                     
-					$(results).html('<li class="ui-menu-item ajaxSearching"><a class="ui-corner-all">Searching...</a></li>').
+					$(results).html('<li class="ui-menu-item ajaxSearching"><a class="ui-corner-all">'+ settings.searchProgressText +'</a></li>').
 						show().css('height', 'auto');
 					
 					getJSONTimeout = window.clearTimeout(getJSONTimeout);
@@ -257,7 +265,14 @@
 			*/
 			function clearAndHideResults() {
 				$(results).html('').hide();
-			}            
+			}
+
+			/**
+			 * Whether or not the search query has changed since the last results was build
+			 */
+			function hasQueryTextChanged(domElement) {
+				return domElement.value !== lastQueryText;
+			}
             
 			/**
 			* To call specific actions based on the keys pressed in the input
